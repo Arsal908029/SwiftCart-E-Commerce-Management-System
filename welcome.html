@@ -1,0 +1,1060 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwiftCart — Shop Fast. Live Bold.</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Bricolage+Grotesque:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --void: #080b14;
+            --deep: #0f1623;
+            --panel: #151d2e;
+            --border: rgba(255,255,255,0.07);
+            --cyan: #00e5ff;
+            --lime: #b8ff57;
+            --violet: #8b5cf6;
+            --rose: #ff4d6d;
+            --text: #e2e8f4;
+            --muted: #64748b;
+            --glow-cyan: 0 0 40px rgba(0,229,255,0.25);
+            --glow-lime: 0 0 40px rgba(184,255,87,0.2);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Bricolage Grotesque', sans-serif;
+            background: var(--void);
+            color: var(--text);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* ── NOISE OVERLAY ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── ORBS ── */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(90px);
+            pointer-events: none;
+            z-index: 0;
+            animation: orbFloat 12s ease-in-out infinite;
+        }
+        .orb-1 {
+            width: 500px; height: 500px;
+            background: rgba(0,229,255,0.08);
+            top: -150px; left: -100px;
+            animation-delay: 0s;
+        }
+        .orb-2 {
+            width: 400px; height: 400px;
+            background: rgba(139,92,246,0.1);
+            top: 30%; right: -100px;
+            animation-delay: -4s;
+        }
+        .orb-3 {
+            width: 350px; height: 350px;
+            background: rgba(184,255,87,0.06);
+            bottom: 10%; left: 20%;
+            animation-delay: -8s;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -20px) scale(1.05); }
+            66% { transform: translate(-20px, 15px) scale(0.95); }
+        }
+
+        /* ── NAV ── */
+        .nav-bar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 2.5rem;
+            background: rgba(8,11,20,0.7);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            animation: slideDown 0.6s ease both;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .brand {
+            font-family: 'Clash Display', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+        .brand-icon {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--cyan), var(--violet));
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem;
+        }
+        .brand-text { color: var(--text); }
+        .brand-text span { color: var(--cyan); }
+
+        .nav-pill {
+            display: flex;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            padding: 4px;
+            gap: 4px;
+        }
+        .nav-link-custom {
+            font-family: 'Bricolage Grotesque', sans-serif;
+            font-weight: 500;
+            font-size: 0.875rem;
+            padding: 0.45rem 1.2rem;
+            border-radius: 100px;
+            text-decoration: none;
+            color: var(--muted);
+            transition: all 0.2s;
+        }
+        .nav-link-custom:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+        .nav-link-custom.active {
+            background: var(--cyan);
+            color: var(--void);
+            font-weight: 600;
+        }
+
+        /* ── HERO ── */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 8rem 2.5rem 5rem;
+            position: relative;
+            z-index: 1;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .hero-content { max-width: 680px; }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0,229,255,0.08);
+            border: 1px solid rgba(0,229,255,0.2);
+            color: var(--cyan);
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 0.4rem 1rem;
+            border-radius: 100px;
+            margin-bottom: 2rem;
+            animation: fadeUp 0.8s ease 0.2s both;
+        }
+        .eyebrow-dot {
+            width: 6px; height: 6px;
+            background: var(--cyan);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        .hero-title {
+            font-family: 'Clash Display', sans-serif;
+            font-size: clamp(3rem, 6vw, 5.5rem);
+            font-weight: 700;
+            line-height: 1.0;
+            letter-spacing: -0.04em;
+            margin-bottom: 1.5rem;
+            animation: fadeUp 0.8s ease 0.35s both;
+        }
+
+        .hero-title .line-1 { color: var(--text); }
+        .hero-title .line-2 {
+            background: linear-gradient(90deg, var(--cyan), var(--lime));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+        }
+        .hero-title .line-3 { color: var(--text); opacity: 0.4; }
+
+        .hero-sub {
+            font-size: 1.1rem;
+            color: var(--muted);
+            line-height: 1.75;
+            max-width: 480px;
+            margin-bottom: 3rem;
+            animation: fadeUp 0.8s ease 0.5s both;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            animation: fadeUp 0.8s ease 0.65s both;
+        }
+
+        .btn-primary-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: var(--cyan);
+            color: var(--void);
+            font-family: 'Clash Display', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 0.9rem 2rem;
+            border-radius: 14px;
+            text-decoration: none;
+            transition: all 0.25s;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-primary-cta::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .btn-primary-cta:hover {
+            background: #00f0ff;
+            color: var(--void);
+            transform: translateY(-2px);
+            box-shadow: var(--glow-cyan);
+        }
+        .btn-primary-cta:hover::after { opacity: 1; }
+
+        .btn-secondary-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: transparent;
+            color: var(--text);
+            font-family: 'Clash Display', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 0.9rem 2rem;
+            border-radius: 14px;
+            text-decoration: none;
+            border: 1px solid var(--border);
+            transition: all 0.25s;
+        }
+        .btn-secondary-cta:hover {
+            border-color: rgba(184,255,87,0.4);
+            color: var(--lime);
+            background: rgba(184,255,87,0.05);
+            transform: translateY(-2px);
+        }
+
+        /* ── FLOATING CARDS (hero side) ── */
+        .hero-visual {
+            position: absolute;
+            right: 0; top: 50%;
+            transform: translateY(-50%);
+            width: 420px;
+            height: 480px;
+            animation: fadeUp 1s ease 0.8s both;
+        }
+
+        .float-card {
+            position: absolute;
+            border-radius: 20px;
+            padding: 1.5rem;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            font-family: 'Bricolage Grotesque', sans-serif;
+        }
+
+        .fc-main {
+            top: 0; left: 0; right: 0;
+            background: linear-gradient(135deg, rgba(0,229,255,0.1), rgba(139,92,246,0.1));
+            border-color: rgba(0,229,255,0.2);
+            animation: cardFloat 6s ease-in-out infinite;
+        }
+        .fc-stat {
+            bottom: 120px; right: 0;
+            width: 180px;
+            background: rgba(15,22,35,0.9);
+            animation: cardFloat 5s ease-in-out -2s infinite;
+        }
+        .fc-order {
+            bottom: 0; left: 10px;
+            width: 220px;
+            background: rgba(15,22,35,0.9);
+            border-left: 3px solid var(--lime);
+            animation: cardFloat 7s ease-in-out -4s infinite;
+        }
+
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .fc-label {
+            font-size: 0.7rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.4rem;
+        }
+        .fc-num {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--cyan), var(--lime));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+        .fc-sub { font-size: 0.8rem; color: var(--muted); margin-top: 0.3rem; }
+        .fc-chips { display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap; }
+        .fc-chip {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.3rem 0.7rem;
+            font-size: 0.7rem;
+            color: var(--muted);
+        }
+        .fc-trend { font-size: 0.75rem; color: #4ade80; font-weight: 600; margin-top: 0.3rem; }
+
+        .fc-order-title {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--lime);
+            margin-bottom: 0.6rem;
+        }
+        .fc-order-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            color: var(--muted);
+            padding: 0.25rem 0;
+            border-top: 1px solid rgba(255,255,255,0.04);
+        }
+        .fc-order-total { color: var(--text); font-weight: 600; }
+
+        /* ── MARQUEE ── */
+        .marquee-section {
+            position: relative;
+            z-index: 1;
+            background: rgba(0,229,255,0.04);
+            border-top: 1px solid rgba(0,229,255,0.1);
+            border-bottom: 1px solid rgba(0,229,255,0.1);
+            padding: 1rem 0;
+            overflow: hidden;
+        }
+        .marquee-track {
+            display: flex;
+            gap: 3rem;
+            animation: marquee 20s linear infinite;
+            white-space: nowrap;
+        }
+        .marquee-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--muted);
+            letter-spacing: 0.05em;
+            flex-shrink: 0;
+        }
+        .marquee-item i { color: var(--cyan); }
+
+        @keyframes marquee {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        /* ── STATS ── */
+        .stats-section {
+            position: relative;
+            z-index: 1;
+            padding: 5rem 2.5rem;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .stat-card.visible {
+            animation: fadeUp 0.6s ease forwards;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0,229,255,0.03), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .stat-card:hover::before { opacity: 1; }
+        .stat-card:hover { border-color: rgba(0,229,255,0.2); transform: translateY(-4px); }
+        .stat-card:nth-child(2) { animation-delay: 0.1s; }
+        .stat-card:nth-child(3) { animation-delay: 0.2s; }
+        .stat-card:nth-child(4) { animation-delay: 0.3s; }
+
+        .stat-icon {
+            width: 48px; height: 48px;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem;
+            margin: 0 auto 1rem;
+        }
+        .stat-icon.cyan { background: rgba(0,229,255,0.1); color: var(--cyan); }
+        .stat-icon.lime { background: rgba(184,255,87,0.1); color: var(--lime); }
+        .stat-icon.violet { background: rgba(139,92,246,0.1); color: var(--violet); }
+        .stat-icon.rose { background: rgba(255,77,109,0.1); color: var(--rose); }
+
+        .stat-num {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.3rem;
+        }
+        .stat-num.cyan { color: var(--cyan); }
+        .stat-num.lime { color: var(--lime); }
+        .stat-num.violet { color: var(--violet); }
+        .stat-num.rose { color: var(--rose); }
+
+        .stat-desc { font-size: 0.85rem; color: var(--muted); }
+
+        /* ── SECTION INTRO ── */
+        .section-intro {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+        .section-kicker {
+            display: inline-block;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--cyan);
+            margin-bottom: 0.75rem;
+        }
+        .section-headline {
+            font-family: 'Clash Display', sans-serif;
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            color: var(--text);
+        }
+
+        /* ── PORTALS ── */
+        .portals-section {
+            position: relative;
+            z-index: 1;
+            padding: 4rem 2.5rem;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .portals-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .portal-card {
+            border-radius: 28px;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: default;
+        }
+
+        .portal-card:hover { transform: translateY(-6px); }
+
+        .portal-admin {
+            background: linear-gradient(135deg, rgba(0,229,255,0.08) 0%, rgba(139,92,246,0.12) 100%);
+            border: 1px solid rgba(0,229,255,0.15);
+        }
+        .portal-admin:hover {
+            border-color: rgba(0,229,255,0.35);
+            box-shadow: 0 24px 60px rgba(0,229,255,0.08);
+        }
+
+        .portal-buyer {
+            background: linear-gradient(135deg, rgba(184,255,87,0.06) 0%, rgba(255,77,109,0.08) 100%);
+            border: 1px solid rgba(184,255,87,0.12);
+        }
+        .portal-buyer:hover {
+            border-color: rgba(184,255,87,0.3);
+            box-shadow: 0 24px 60px rgba(184,255,87,0.06);
+        }
+
+        .portal-bg-glyph {
+            position: absolute;
+            right: -30px; bottom: -30px;
+            font-size: 10rem;
+            opacity: 0.04;
+            pointer-events: none;
+            transition: all 0.35s;
+        }
+        .portal-card:hover .portal-bg-glyph {
+            opacity: 0.07;
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .portal-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            border-radius: 100px;
+            padding: 0.35rem 0.9rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 1.75rem;
+        }
+        .portal-admin .portal-badge { background: rgba(0,229,255,0.1); color: var(--cyan); border: 1px solid rgba(0,229,255,0.2); }
+        .portal-buyer .portal-badge { background: rgba(184,255,87,0.1); color: var(--lime); border: 1px solid rgba(184,255,87,0.2); }
+
+        .portal-title {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.75rem;
+            color: var(--text);
+        }
+
+        .portal-desc {
+            color: var(--muted);
+            line-height: 1.7;
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
+
+        .feature-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-bottom: 2.5rem;
+        }
+        .feature-chip {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+            color: var(--muted);
+            transition: all 0.2s;
+        }
+        .portal-card:hover .feature-chip { border-color: rgba(255,255,255,0.1); color: var(--text); }
+        .feature-chip i { font-size: 0.7rem; }
+        .portal-admin .feature-chip i { color: var(--cyan); }
+        .portal-buyer .feature-chip i { color: var(--lime); }
+
+        .portal-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Clash Display', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.8rem 1.75rem;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.25s;
+            position: relative;
+            overflow: hidden;
+        }
+        .portal-admin .portal-btn {
+            background: var(--cyan);
+            color: var(--void);
+        }
+        .portal-admin .portal-btn:hover {
+            background: #00f0ff;
+            color: var(--void);
+            box-shadow: var(--glow-cyan);
+            transform: translateY(-1px);
+        }
+        .portal-buyer .portal-btn {
+            background: var(--lime);
+            color: var(--void);
+        }
+        .portal-buyer .portal-btn:hover {
+            background: #c8ff6b;
+            color: var(--void);
+            box-shadow: var(--glow-lime);
+            transform: translateY(-1px);
+        }
+
+        /* ── HOW IT WORKS ── */
+        .how-section {
+            position: relative;
+            z-index: 1;
+            padding: 5rem 2.5rem;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .step-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        .step-card:hover {
+            border-color: rgba(0,229,255,0.2);
+            transform: translateY(-3px);
+        }
+
+        .step-num {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 4rem;
+            font-weight: 700;
+            color: rgba(0,229,255,0.06);
+            position: absolute;
+            top: 0.5rem; right: 1.25rem;
+            line-height: 1;
+        }
+
+        .step-icon {
+            width: 44px; height: 44px;
+            background: rgba(0,229,255,0.08);
+            border: 1px solid rgba(0,229,255,0.15);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--cyan);
+            font-size: 1.1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .step-title {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 0.6rem;
+            color: var(--text);
+        }
+
+        .step-desc { font-size: 0.875rem; color: var(--muted); line-height: 1.65; }
+
+        /* ── FOOTER ── */
+        .footer {
+            position: relative;
+            z-index: 1;
+            border-top: 1px solid var(--border);
+            padding: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .footer-brand {
+            font-family: 'Clash Display', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .footer-brand span { color: var(--cyan); }
+
+        .footer-copy { font-size: 0.8rem; color: var(--muted); }
+
+        .footer-links { display: flex; gap: 1.5rem; }
+        .footer-links a { font-size: 0.8rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+        .footer-links a:hover { color: var(--cyan); }
+
+        /* ── ALERT ── */
+        .alert-banner {
+            position: fixed;
+            top: 5rem; left: 50%; transform: translateX(-50%);
+            background: rgba(74,222,128,0.1);
+            border: 1px solid rgba(74,222,128,0.3);
+            color: #4ade80;
+            padding: 0.75rem 1.75rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            backdrop-filter: blur(20px);
+            z-index: 200;
+            animation: fadeDown 0.4s ease both;
+        }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translate(-50%, -10px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── SCROLL REVEAL ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ── CURSOR GLOW ── */
+        .cursor-glow {
+            position: fixed;
+            width: 300px; height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,229,255,0.04) 0%, transparent 70%);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            transition: opacity 0.3s;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1024px) {
+            .hero-visual { display: none; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .portals-grid { grid-template-columns: 1fr; }
+            .steps-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-bar { padding: 1rem 1.25rem; }
+            .hero-section { padding: 7rem 1.25rem 4rem; }
+            .stats-section, .portals-section, .how-section { padding: 3rem 1.25rem; }
+            .footer { flex-direction: column; gap: 1rem; text-align: center; }
+            .hero-cta { flex-direction: column; }
+            .btn-primary-cta, .btn-secondary-cta { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- AMBIENT ORBS -->
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- CURSOR GLOW -->
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- ALERT -->
+
+<!-- NAV -->
+<nav class="nav-bar">
+    <a href="/" class="brand">
+        <div class="brand-icon">⚡</div>
+        <span class="brand-text">Swift<span>Cart</span></span>
+    </a>
+    <div class="nav-pill">
+        <a href="http://127.0.0.1:8000/login" class="nav-link-custom">Sign In</a>
+        <a href="http://127.0.0.1:8000/register" class="nav-link-custom active">Get Started</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero-section">
+    <div class="hero-content">
+        <div class="eyebrow">
+            <div class="eyebrow-dot"></div>
+            Live Shopping Platform
+        </div>
+        <h1 class="hero-title">
+            <span class="line-1">Shop Fast.</span>
+            <span class="line-2">Move Faster.</span>
+            <span class="line-3">SwiftCart.</span>
+        </h1>
+        <p class="hero-sub">
+            A next-gen commerce platform where admins wield complete inventory control
+            and buyers experience a seamless, lightning-fast shopping journey.
+        </p>
+        <div class="hero-cta">
+            <a href="http://127.0.0.1:8000/register" class="btn-primary-cta">
+                <i class="fas fa-bolt"></i> Start Shopping
+            </a>
+            <a href="http://127.0.0.1:8000/login" class="btn-secondary-cta">
+                <i class="fas fa-sign-in-alt"></i> Sign In
+            </a>
+        </div>
+    </div>
+
+    <div class="hero-visual">
+        <div class="float-card fc-main">
+            <div class="fc-label">Live Revenue</div>
+            <div class="fc-num">PKR 84,290</div>
+            <div class="fc-sub">↑ 12.4% from last month</div>
+            <div class="fc-chips">
+                <div class="fc-chip">Products: 48</div>
+                <div class="fc-chip">Orders: 127</div>
+                <div class="fc-chip">Active: 12</div>
+            </div>
+        </div>
+        <div class="float-card fc-stat">
+            <div class="fc-label">New Orders</div>
+            <div class="fc-num" style="font-size:1.8rem">24</div>
+            <div class="fc-trend"><i class="fas fa-arrow-up me-1"></i>8% this week</div>
+        </div>
+        <div class="float-card fc-order">
+            <div class="fc-order-title">⚡ Order #1042 — Processing</div>
+            <div class="fc-order-row"><span>T-Shirt × 2</span><span>PKR 800</span></div>
+            <div class="fc-order-row"><span>Hoodie × 1</span><span>PKR 1,200</span></div>
+            <div class="fc-order-row fc-order-total"><span>Total</span><span>PKR 2,000</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+    <div class="marquee-track">
+        <div class="marquee-item"><i class="fas fa-shield-check"></i> Secure Payments</div>
+        <div class="marquee-item"><i class="fas fa-bolt"></i> Instant Checkout</div>
+        <div class="marquee-item"><i class="fas fa-chart-line"></i> Live Analytics</div>
+        <div class="marquee-item"><i class="fas fa-box-open"></i> Inventory Control</div>
+        <div class="marquee-item"><i class="fas fa-clock-rotate-left"></i> Order History</div>
+        <div class="marquee-item"><i class="fas fa-truck-fast"></i> Fast Delivery</div>
+        <div class="marquee-item"><i class="fas fa-shield-check"></i> Secure Payments</div>
+        <div class="marquee-item"><i class="fas fa-bolt"></i> Instant Checkout</div>
+        <div class="marquee-item"><i class="fas fa-chart-line"></i> Live Analytics</div>
+        <div class="marquee-item"><i class="fas fa-box-open"></i> Inventory Control</div>
+        <div class="marquee-item"><i class="fas fa-clock-rotate-left"></i> Order History</div>
+        <div class="marquee-item"><i class="fas fa-truck-fast"></i> Fast Delivery</div>
+    </div>
+</div>
+
+<!-- STATS -->
+<section class="stats-section">
+    <div class="stats-grid">
+        <div class="stat-card reveal">
+            <div class="stat-icon cyan"><i class="fas fa-box-open"></i></div>
+            <div class="stat-num cyan">2,400+</div>
+            <div class="stat-desc">Products Managed</div>
+        </div>
+        <div class="stat-card reveal">
+            <div class="stat-icon lime"><i class="fas fa-shopping-bag"></i></div>
+            <div class="stat-num lime">14K+</div>
+            <div class="stat-desc">Orders Fulfilled</div>
+        </div>
+        <div class="stat-card reveal">
+            <div class="stat-icon violet"><i class="fas fa-signal"></i></div>
+            <div class="stat-num violet">99.9%</div>
+            <div class="stat-desc">Uptime Guaranteed</div>
+        </div>
+        <div class="stat-card reveal">
+            <div class="stat-icon rose"><i class="fas fa-money-bill-wave"></i></div>
+            <div class="stat-num rose">PKR 2M+</div>
+            <div class="stat-desc">Revenue Tracked</div>
+        </div>
+    </div>
+</section>
+
+<!-- PORTALS -->
+<section class="portals-section">
+    <div class="section-intro reveal">
+        <div class="section-kicker">Choose Your Role</div>
+        <h2 class="section-headline">Two Portals. One Swift Platform.</h2>
+    </div>
+
+    <div class="portals-grid">
+        <!-- Admin -->
+        <div class="portal-card portal-admin reveal">
+            <div class="portal-bg-glyph">🛡</div>
+            <div class="portal-badge"><i class="fas fa-shield-halved"></i> Admin Access</div>
+            <h3 class="portal-title">Command Dashboard</h3>
+            <p class="portal-desc">
+                Wield full control over your store. Manage inventory, analyze revenue,
+                handle orders, and track every payment — all from one powerful panel.
+            </p>
+            <div class="feature-chips">
+                <div class="feature-chip"><i class="fas fa-check"></i> Product Management</div>
+                <div class="feature-chip"><i class="fas fa-check"></i> Real-time Orders</div>
+                <div class="feature-chip"><i class="fas fa-check"></i> Revenue Reports</div>
+                <div class="feature-chip"><i class="fas fa-check"></i> Payment Logs</div>
+                <div class="feature-chip"><i class="fas fa-check"></i> Sales Analytics</div>
+            </div>
+            <a href="http://127.0.0.1:8000/login" class="portal-btn">
+                Admin Login <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <!-- Buyer -->
+        <div class="portal-card portal-buyer reveal">
+            <div class="portal-bg-glyph">🛒</div>
+            <div class="portal-badge"><i class="fas fa-bag-shopping"></i> Buyer Access</div>
+            <h3 class="portal-title">Buyer Portal</h3>
+            <p class="portal-desc">
+                Discover products, build your cart, checkout in seconds,
+                and track every order in your personal history dashboard.
+            </p>
+            <div class="feature-chips">
+                <div class="feature-chip"><i class="fas fa-check"></i> Browse Products</div>
+                <div class="feature-chip"><i class="fas fa-check"></i> Smart Cart</div>
+                <div class="feature-chip"><i class="fas fa-check"></i> Fast Checkout</div>
+                <div class="feature-chip"><i class="fas fa-check"></i> Order History</div>
+                <div class="feature-chip"><i class="fas fa-check"></i> Live Tracking</div>
+            </div>
+            <a href="http://127.0.0.1:8000/login" class="portal-btn">
+                Shop Now <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section">
+    <div class="section-intro reveal">
+        <div class="section-kicker">How It Works</div>
+        <h2 class="section-headline">Three Steps to SwiftCart.</h2>
+    </div>
+
+    <div class="steps-grid">
+        <div class="step-card reveal">
+            <div class="step-num">01</div>
+            <div class="step-icon"><i class="fas fa-user-plus"></i></div>
+            <div class="step-title">Create Your Account</div>
+            <p class="step-desc">Sign up as a buyer in seconds. No credit card required to get started. Your account is secured immediately.</p>
+        </div>
+        <div class="step-card reveal" style="transition-delay:0.1s">
+            <div class="step-num">02</div>
+            <div class="step-icon"><i class="fas fa-magnifying-glass"></i></div>
+            <div class="step-title">Browse & Add to Cart</div>
+            <p class="step-desc">Explore our curated product catalog. Add what you love to your cart with a single click.</p>
+        </div>
+        <div class="step-card reveal" style="transition-delay:0.2s">
+            <div class="step-num">03</div>
+            <div class="step-icon"><i class="fas fa-clock-rotate-left"></i></div>
+            <div class="step-title">Track Your Orders</div>
+            <p class="step-desc">Checkout in seconds and monitor every order from your personal history dashboard — anytime, anywhere.</p>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <a href="/" class="footer-brand">⚡ Swift<span>Cart</span></a>
+    <div class="footer-copy">&copy; 2026 SwiftCart. Built with Laravel.</div>
+    <div class="footer-links">
+        <a href="http://127.0.0.1:8000/login">Sign In</a>
+        <a href="http://127.0.0.1:8000/register">Register</a>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Cursor glow
+    const glow = document.getElementById('cursorGlow');
+    document.addEventListener('mousemove', e => {
+        glow.style.left = e.clientX + 'px';
+        glow.style.top = e.clientY + 'px';
+    });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.15 });
+    reveals.forEach(el => observer.observe(el));
+
+    // Animated stat counters
+    function animateCount(el, target, suffix = '') {
+        let start = 0;
+        const duration = 1800;
+        const step = timestamp => {
+            if (!start) start = timestamp;
+            const progress = Math.min((timestamp - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            el.textContent = Math.floor(eased * target).toLocaleString() + suffix;
+            if (progress < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+    }
+
+    const statObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const nums = entry.target.querySelectorAll('.stat-num');
+                // just add animation class — numbers are static display
+                entry.target.style.opacity = 1;
+                entry.target.style.transform = 'translateY(0)';
+                statObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.3 });
+
+    document.querySelectorAll('.stat-card').forEach(card => {
+        card.style.opacity = 0;
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        statObserver.observe(card);
+    });
+</script>
+</body>
+</html>
